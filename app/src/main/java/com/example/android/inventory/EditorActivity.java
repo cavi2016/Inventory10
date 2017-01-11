@@ -32,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -110,6 +111,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mPriceEditText = (EditText) findViewById(R.id.edit_product_price);
 
         mImageView = (ImageView) findViewById(R.id.image);
+        ViewTreeObserver viewTreeObserver = mImageView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                mImageView.setImageBitmap(getBitmapFromUri(mUri));
+            }
+        });
         mButtonTakePicture = (Button) findViewById(R.id.take_picture);
         mButtonTakePicture.setEnabled(false);
 
@@ -179,7 +188,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             File file = createImageFile();
 
             mUri = FileProvider.getUriForFile(getApplication().getApplicationContext(),
-                    "com.example.android.inventory", file);
+                    "com.example.android.inventory.fileprovider", file);
             intent.putExtra(MediaStore.EXTRA_OUTPUT,
                     mUri);
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
@@ -231,6 +240,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     private Bitmap getBitmapFromUri(Uri uri) {
+        if (uri==null){return null;}
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
         ParcelFileDescriptor parcelFileDescriptor = null;

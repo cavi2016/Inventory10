@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.example.android.inventory.data.InventoryContract.ProductEntry;
 
 public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int PET_LOADER = 0;
+    private static final int INVENTORY_LOADER = 0;
     private static String NO_PHOTO = "";
     ProductCursorAdapter mCursorAdapter;
 
@@ -58,7 +58,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        getLoaderManager().initLoader(PET_LOADER, null, this);
+        getLoaderManager().initLoader(INVENTORY_LOADER, null, this);
     }
 
     @Override
